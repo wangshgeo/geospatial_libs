@@ -1,0 +1,18 @@
+
+1. fix bugs for with the convex hull of a point set when the result geometry  is null
+
+from shapely.geometry import Polygon, Point,MultiPoint
+#Generate M candidate sites with the convex hull of a point set
+    '''
+    Input:
+        points: a Numpy array with shape of (N,2)
+        M: the number of candidate sites to generate
+    Return:
+        sites: a Numpy array with shape of (M,2)
+    '''
+    hull = ConvexHull(points)
+    polygon_points = points[hull.vertices]
+    poly = Polygon(polygon_points)
+    
+Solution:    
+    poly = MultiPoint(points).convex_hull
