@@ -16,3 +16,10 @@ from shapely.geometry import Polygon, Point,MultiPoint
     
 Solution:    
     poly = MultiPoint(points).convex_hull
+
+
+2. install VS 2015 from 
+https://www.kunal-chowdhury.com/2015/07/download-visualstudio-2015.html#topic1
+
+3. vcpkg install 3rd libraries
+https://github.com/microsoft/vcpkg
