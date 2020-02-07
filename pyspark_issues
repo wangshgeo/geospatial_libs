@@ -1,0 +1,13 @@
+1.TypeError: 'JavaPackage' object is not callable
+
+not find the right jars
+
+2.SPARK_HOME not set
+
+set SPARK_HOME using
+
+import os
+os.environ["SPARK_HOME"] = "/usr/local/Cellar/apache-spark/2.4.4/libexec/"
+
+
+3.
