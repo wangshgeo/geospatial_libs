@@ -7,14 +7,21 @@ java 8
 conda install -c anaconda openjdk
 
 Now supporting:
+
 0) pyspark
-demo:pyspark_demo.ipynb
+demo:
+pyspark_demo.ipynb
+
 1) geospark
 pip install geo-pyspark
 pip install geospark
+https://datasystemslab.github.io/GeoSpark/tutorial/geospark-python/
+https://pypi.org/project/geo-pyspark/
+https://pypi.org/project/geospark/
+
 demo:
-GeoSparkSQL.ipynb
-GeoSparkCore.ipynb
+GeoSparkSQL_demo.ipynb
+
 2) pyrasterframes
 pip install pyrasterframes
 https://rasterframes.io/getting-started.html
@@ -31,7 +38,7 @@ geopyspark_demo.ipynb
 
 4)geopandas+pyspark
 demo:
-pyspark_states.ipynb
+pyspark_geopandas.ipynb
 
 issues:
 1).TypeError: 'JavaPackage' object is not callable
