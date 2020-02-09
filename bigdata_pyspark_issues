@@ -10,6 +10,7 @@ Now supporting:
 0) pyspark
 demo:pyspark_demo.ipynb
 1) geospark
+pip install geo-pyspark
 pip install geospark
 demo:
 GeoSparkSQL.ipynb
