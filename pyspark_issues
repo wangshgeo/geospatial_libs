@@ -1,13 +1,56 @@
-1.TypeError: 'JavaPackage' object is not callable
+
+1.install toolkits
+pyspark:
+conda install -c conda-forge pyspark 
+(or using pip install pyspark)
+java 8 
+conda install -c anaconda openjdk
+
+Now supporting:
+0) pyspark
+demo:pyspark_demo.ipynb
+1) geospark
+pip install geospark
+demo:
+GeoSparkSQL.ipynb
+GeoSparkCore.ipynb
+2) pyrasterframes
+pip install pyrasterframes
+https://rasterframes.io/getting-started.html
+https://pypi.org/project/pyrasterframes/
+demo:
+pyrasterframes_demo.ipynb
+3)geopyspark
+!pip install geopyspark
+#https://pypi.org/project/geopyspark/
+#https://geopyspark.readthedocs.io/en/latest/guides/visualization.html
+
+demo:
+geopyspark_demo.ipynb
+
+4)geopandas+pyspark
+demo:
+pyspark_states.ipynb
+
+issues:
+1).TypeError: 'JavaPackage' object is not callable
 
 not find the right jars
 
-2.SPARK_HOME not set
+2).SPARK_HOME not set
 
 set SPARK_HOME using
-
 import os
+#Mac
 os.environ["SPARK_HOME"] = "/usr/local/Cellar/apache-spark/2.4.4/libexec/"
+#CyberGISX
+os.environ["SPARK_HOME"] = "/opt/conda/lib/python3.7/site-packages/pyspark/"
 
+3). JAVA_HOME not set
+set JAVA_HOME using 
 
-3.
+conda install -c anaconda openjdk
+
+4). Read csv/shp/tsv error
+
+checking the jars and filepath
