@@ -1,0 +1,118 @@
+FROM jupyter/all-spark-notebook
+#scipy-notebook
+
+USER root 
+
+#RUN apt update \
+#    && apt-get install -y software-properties-common \ 
+#    && add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable\
+#    && add-apt-repository -y ppa:ubuntu-toolchain-r/test
+
+RUN apt-get update && apt-get install --fix-missing -y --no-install-recommends \
+  software-properties-common \ 
+  build-essential \ 
+  git \ 
+  subversion \
+  wget \
+  bash-completion \
+  netcat \
+  iputils-ping \
+  nano \
+  zip \
+  #openssh-client \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
+
+RUN apt-get install -y qgis python3-qgis qgis-plugin-grass saga \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
+
+RUN apt-get install postgresql-12 postgresql-12-postgis-2.5 postgresql-12-postgis-2.5-scripts postgresql-12-pgrouting
+
+RUN wget http://download.osgeo.org/proj/proj-4.8.0.tar.gz && \
+  tar -xzvf proj-4.8.0.tar.gz && rm proj-4.8.0.tar.gz && cd proj-4.8.0 && \
+  ./configure && \
+  make && \
+  make install
+
+RUN apt-get update -y && \
+    apt-get install -y git pkg-config build-essential
+
+# osm2pgrouting Requirements
+RUN apt-get install -y  cmake expat libexpat1-dev \
+  libboost-dev libboost-program-options-dev libpqxx-dev
+
+# compile osm2pgrouting
+ENV OSM_2_PGROUTING_VERSION=2.3.3
+RUN git clone https://github.com/pgRouting/osm2pgrouting.git
+RUN cd osm2pgrouting && \
+    git fetch --all && git checkout v${OSM_2_PGROUTING_VERSION} && \
+    cmake -H. -Bbuild && \
+    cd build/ && make && make install
+
+# osm2pgsql Requirements$
+RUN apt-get install -y make cmake g++ libboost-dev libboost-system-dev \
+   libboost-filesystem-dev libexpat1-dev zlib1g-dev \
+   libbz2-dev libpq-dev libproj-dev lua5.2 liblua5.2-dev
+
+# compile osm2pgsql
+ENV OSM_2_PGRSQL_VERSION=0.94.0
+RUN git clone git://github.com/openstreetmap/osm2pgsql.git && \
+    cd osm2pgsql && \
+    git fetch --all && git checkout ${OSM_2_PGRSQL_VERSION} && \
+    mkdir build && cd build && cmake .. && \
+    make && make install
+
+# Setup home environment
+ENV PKG_CONFIG_PATH /root/lib/pkgconfig
+ENV LD_LIBRARY_PATH /root/lib
+
+ADD bashrc /root/.bashrc
+
+
+RUN git clone https://github.com/cybergis/find_inlets.git /tmp/find_inlets \
+    && cd /tmp/find_inlets/src \
+    && g++ find_inlets.cpp -I/usr/include/gdal -L/usr/lib -lgdal -o find_inlets_mr \
+    && cp ./find_inlets_mr /usr/bin \
+    && rm -rf /tmp/find_inlets
+
+
+USER jovyan
+
+RUN conda install -y -c default\
+    pandas \
+    gdal \
+    basemap \
+    geopandas \
+    markdown2 \
+    osmnx \
+    rasterio \
+    scikit-image \
+ && conda clean --all -y
+
+# conda env
+#qgis
+RUN conda install -y -c default holoviews geoviews datashader panel fiona shapely rasterio paramiko ipywidgets pyproj ipython numpy xarray matplotlib geopandas seaborn netCDF4 requests && \
+    conda install -y -c conda-forge ipyleaflet jupyterthemes hs_restclient tqdm statsmodels mapclassify mplleaflet basemap-data-hires earthpy networkit cmocean psycopg2 fastparquet dask folium sphinx xlsxwriter html5lib lxml s3fs scikit-learn && \
+    conda install -y -c default owslib sqlalchemy cartopy pysal pyshp geojson cenpy pykdtree && \
+    conda clean --all -y
+
+# Urban computation, simulation and analytics
+RUN conda install -y -c udst pandana urbanaccess && \
+    conda install -y -c plotly plotly && \
+    conda install -c esri arcgis && \
+    conda clean --all -y
+
+RUN pip install --quiet urbansim pykrige lidar ortools mesa pyarrow PuLP partridge peartree
+
+
+USER jovyan
+
+
+RUN conda init
+RUN conda config --set auto_activate_base false
+
+ENV GDAL_DATA=/opt/conda/share/gdal
+ENV PROJ_LIB=/opt/conda/share/proj
+
+
