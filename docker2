@@ -27,14 +27,20 @@ RUN sh -c 'echo "deb http://qgis.org/ubuntu-ltr bionic main" >> /etc/apt/sources
 RUN sh -c 'echo "deb-src http://qgis.org/ubuntu-ltr bionic main" >> /etc/apt/sources.list'
 RUN add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 
+RUN apt -y install gnupg2
+
 RUN wget -O - https://qgis.org/downloads/qgis-2019.gpg.key | gpg --import
 # verify fingerprint
 RUN gpg --fingerprint 51F523511C7028C3
-RUN gpg --export --armor 51F523511C7028C3 | sudo apt-key add -
+RUN gpg --export --armor 51F523511C7028C3 | apt-key add -
 
 RUN apt-get update && apt-get install -y qgis python3-qgis qgis-plugin-grass saga \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
+
+
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" | tee  /etc/apt/sources.list.d/pgdg.list
 
 RUN apt-get install postgresql-12 postgresql-12-postgis-2.5 postgresql-12-postgis-2.5-scripts postgresql-12-pgrouting
 
