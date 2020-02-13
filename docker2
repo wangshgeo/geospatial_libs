@@ -32,7 +32,7 @@ RUN wget -O - https://qgis.org/downloads/qgis-2019.gpg.key | gpg --import
 RUN gpg --fingerprint 51F523511C7028C3
 RUN gpg --export --armor 51F523511C7028C3 | sudo apt-key add -
 
-RUN apt-get install -y qgis python3-qgis qgis-plugin-grass saga \
+RUN apt-get update && apt-get install -y qgis python3-qgis qgis-plugin-grass saga \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
 
