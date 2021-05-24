@@ -1,0 +1,29 @@
+FROM cybergisx/cybergis-jupyter-notebook:94199edc8bce 
+#jupyter/scipy-notebook:ad3574d3c5c7
+
+USER jovyan
+RUN /opt/conda/bin/python -m pip install --quiet pytest-notebook pulp docplex pytest awscli 
+#osmnx==0.15.1
+
+RUN conda install -c conda-forge pyomo pyomo.extras coincbc ipopt glpk 
+#pgrouting
+RUN pip install -i https://pypi.gurobi.com gurobipy
+
+RUN python -m pip install --quiet sshkernel
+
+RUN python -m sshkernel install \
+ --user \
+ --name "ssh-py3"
+ 
+# Install sos-py3 env (Roger)
+# see https://github.com/vatlab/sos
+
+#RUN /opt/conda/bin/conda create -y -n sos-py3 -c default && \
+
+RUN /opt/conda/bin/conda create -y -n sos-py3 ipykernel sos sos-pbs sos-notebook jupyterlab-sos sos-python -c conda-forge && \
+ /opt/conda/bin/conda clean --all -y
+ 
+RUN /opt/conda/envs/sos-py3/bin/python -m sos_notebook.install
+
+
+
